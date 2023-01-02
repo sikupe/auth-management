@@ -9,7 +9,7 @@ file(GLOB MAIN src/main.cpp)
 list(APPEND TEST ${SRC})
 list(REMOVE_ITEM TEST ${MAIN})
 
-add_library(auth-lib ${SRC})
+add_library(auth-lib ${SRC} src/controller/UserController.h src/service/UserService.cpp src/service/UserService.h src/dto/ConfigDto.h src/components/AppComponent.h src/dto/PageDto.h)
 
 ## include directories
 
@@ -18,15 +18,17 @@ target_include_directories(auth-lib PUBLIC src)
 
 ## link libs
 
-find_package(oatpp          1.3.0 REQUIRED)
+find_package(oatpp 1.3.0 REQUIRED)
+find_package(oatpp-postgresql 1.3.0 REQUIRED)
 #find_package(oatpp-swagger  1.3.0 REQUIRED)
 #find_package(oatpp-sqlite   1.3.0 REQUIRED)
 
 target_link_libraries(auth-lib
         # Oat++
         PUBLIC oatpp::oatpp
-#        PUBLIC oatpp::oatpp-swagger
-#        PUBLIC oatpp::oatpp-sqlite
+        PUBLIC oatpp::oatpp-postgresql
+        #        PUBLIC oatpp::oatpp-swagger
+        #        PUBLIC oatpp::oatpp-sqlite
         )
 
 # If CMake can't find SQLite3:
@@ -53,10 +55,10 @@ add_definitions(
         -DDATABASE_MIGRATIONS="${CMAKE_CURRENT_SOURCE_DIR}/sql"
 )
 
-if(CMAKE_SYSTEM_NAME MATCHES Linux)
+if (CMAKE_SYSTEM_NAME MATCHES Linux)
     find_package(Threads REQUIRED)
     target_link_libraries(auth-lib INTERFACE Threads::Threads ${CMAKE_DL_LIBS})
-endif()
+endif ()
 
 ## add executables
 

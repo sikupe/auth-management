@@ -1,0 +1,14 @@
+version: '3.10'
+
+services:
+  database:
+    image: postgres:latest
+    restart: always
+#    volumes:
+#      - ./sql:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_PASSWORD: test_pw
+      POSTGRES_USER: test_user
+      POSTGRES_DB: test_db
+    ports:
+      - '127.0.0.1:5432:5432'
