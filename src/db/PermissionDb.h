@@ -1,0 +1,14 @@
+//
+// Created by simon on 05.01.23.
+//
+
+#ifndef AUTHORIZATION_MANAGEMENT_PERMISSIONDB_H
+#define AUTHORIZATION_MANAGEMENT_PERMISSIONDB_H
+
+
+class PermissionDb {
+
+};
+
+
+#endif //AUTHORIZATION_MANAGEMENT_PERMISSIONDB_H
