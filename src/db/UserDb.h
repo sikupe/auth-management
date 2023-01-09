@@ -12,7 +12,6 @@
 
 class UserDb : public oatpp::orm::DbClient {
 public:
-
     explicit UserDb(const std::shared_ptr<oatpp::orm::Executor> &executor)
             : oatpp::orm::DbClient(executor) {
 

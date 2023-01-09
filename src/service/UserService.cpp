@@ -25,7 +25,9 @@ oatpp::Object<UserDto> UserService::getUserById(const oatpp::String &id,
     auto result = dbResult->fetch<oatpp::Vector<oatpp::Object<UserDto>>>();
     OATPP_ASSERT_HTTP(result->size() == 1, Status::CODE_500, "Unknown error");
 
-    return result[0];
+    const auto r = result[0];
+
+    return r;
 }
 
 oatpp::Object<PageDto<oatpp::Object<UserDto>>> UserService::getUsers() {

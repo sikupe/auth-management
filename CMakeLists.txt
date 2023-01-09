@@ -9,7 +9,7 @@ file(GLOB MAIN src/main.cpp)
 list(APPEND TEST ${SRC})
 list(REMOVE_ITEM TEST ${MAIN})
 
-add_library(auth-lib ${SRC} src/controller/UserController.h src/service/UserService.cpp src/service/UserService.h src/dto/ConfigDto.h src/components/AppComponent.h src/dto/PageDto.h)
+add_library(auth-lib ${SRC} src/controller/UserController.h src/service/UserService.cpp src/service/UserService.h src/dto/ConfigDto.h src/components/AppComponent.h src/dto/PageDto.h src/dto/PermissionProvider.cpp src/dto/PermissionProvider.h src/dto/ConfigPair.cpp src/dto/ConfigPair.h src/dto/PermissionProviderType.cpp src/dto/PermissionProviderType.h src/dto/Permission.cpp src/dto/Permission.h src/dto/PermissionRequest.cpp src/dto/PermissionRequest.h src/controller/PermissionController.h src/controller/PermissionProviderController.h src/controller/PermissionRequestController.h src/db/PermissionDb.h src/db/PermissionProviderDb.h src/db/ConfigPairDb.h src/db/PermissionRequestDb.h src/service/PermissionProviderService.cpp src/service/PermissionProviderService.h src/dto/PermissionProviderRequest.cpp src/dto/PermissionProviderRequest.h src/dto/ConfigPairRequest.cpp src/dto/ConfigPairRequest.h)
 
 ## include directories
 
