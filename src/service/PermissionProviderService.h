@@ -8,6 +8,7 @@
 #include "memory"
 #include "dto/PermissionProviderResponse.h"
 #include "dto/PermissionProviderRequest.h"
+#include "dto/PageDto.h"
 
 #include <oatpp/orm/Connection.hpp>
 #include <oatpp/core/provider/Provider.hpp>
@@ -28,6 +29,18 @@ private:
 public:
     oatpp::Object<PermissionProviderResponse>
     createPermissionProvider(const oatpp::Object<PermissionProviderRequest> &permissionProviderRequest);
+
+    oatpp::Object<PageDto<oatpp::Object<PermissionProviderResponse>>>
+    listPermissionProviders();
+
+    oatpp::Object<PermissionProviderResponse>
+    getPermissionProvider(const oatpp::String &id);
+
+    const oatpp::Void &deletePermissionProvider(const oatpp::String &wrapper);
+
+    oatpp::Object<PermissionProviderResponse>
+    updatePermissionProvider(const oatpp::String &id,
+                             const oatpp::Object<PermissionProviderRequest> &permission_provider);
 };
 
 

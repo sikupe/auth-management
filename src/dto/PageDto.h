@@ -16,7 +16,7 @@ class PageDto : public oatpp::DTO {
 
     DTO_FIELD(Vector < T >, items);
 
-    DTO_FIELD(UInt32, size);
+    DTO_FIELD(UInt32 , size);
 };
 
 #include OATPP_CODEGEN_BEGIN(DTO)

@@ -13,6 +13,7 @@
 #include "controller/UserController.h"
 #include "controller/PermissionController.h"
 #include "controller/PermissionProviderController.h"
+#include "components/ConfigComponent.h"
 
 #include <memory>
 
@@ -21,8 +22,9 @@ using namespace std;
 int main() {
     oatpp::base::Environment::init();
 
-    AppComponent appComponent;
+    ConfigComponent configComponent;
     DatabaseComponent databaseComponent;
+    AppComponent appComponent;
 
     OATPP_CREATE_COMPONENT(std::shared_ptr<oatpp::data::mapping::ObjectMapper>, apiObjectMapper)([] {
         return oatpp::parser::json::mapping::ObjectMapper::createShared();
@@ -31,11 +33,13 @@ int main() {
     auto pingController = make_shared<PingController>();
     auto userController = make_shared<UserController>();
     auto permissionProviderController = make_shared<PermissionProviderController>();
+    auto permissionController = make_shared<PermissionController>();
 
     auto router = oatpp::web::server::HttpRouter::createShared();
     router->addController(pingController);
     router->addController(userController);
     router->addController(permissionProviderController);
+    router->addController(permissionController);
 
     auto connectionHandler = oatpp::web::server::HttpConnectionHandler::createShared(router);
     auto connectionProvider = oatpp::network::tcp::server::ConnectionProvider::createShared(

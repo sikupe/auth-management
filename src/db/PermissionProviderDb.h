@@ -10,6 +10,7 @@
 #include <oatpp-postgresql/orm.hpp>
 
 #include OATPP_CODEGEN_BEGIN(DbClient) //<- Begin Codegen
+#include "dto/PermissionProviderRequest.h"
 
 class PermissionProviderDb : oatpp::orm::DbClient {
 public:
@@ -23,16 +24,30 @@ public:
           PARAM(oatpp::Object<PermissionProvider>, pp)
     )
 
-    QUERY(deletePermissionProvider,
-          "INSERT INTO permission_providers (type) VALUES (:id);",
+    QUERY(listPermissionProvider,
+          "SELECT * FROM permission_providers OFFSET :offset LIMIT :limit;",
+          PREPARE(true),
+          PARAM(oatpp::UInt32, offset),
+          PARAM(oatpp::UInt32, limit)
+    )
+
+    QUERY(getPermissionProvider,
+          "SELECT * FROM permission_providers WHERE id = :id;",
           PREPARE(true),
           PARAM(oatpp::String, id)
     )
 
     QUERY(updatePermissionProvider,
-          "UPDATE permission_providers SET type = :pp.type WHERE id=:pp.id RETURNING *;",
+          "UPDATE permission_providers SET type = :pp.type WHERE id=:id RETURNING *;",
           PREPARE(true),
-          PARAM(oatpp::Object<PermissionProvider>, pp)
+          PARAM(oatpp::String, id),
+          PARAM(oatpp::Object<PermissionProviderRequest>, pp)
+    )
+
+    QUERY(deletePermissionProvider,
+          "DELETE FROM permission_providers WHERE id=:id RETURNING *;",
+          PREPARE(true),
+          PARAM(oatpp::String, id)
     )
 };
 

@@ -10,6 +10,7 @@
 #include <oatpp-postgresql/orm.hpp>
 
 #include OATPP_CODEGEN_BEGIN(DbClient) //<- Begin Codegen
+#include "dto/PermissionDto.h"
 
 class PermissionDb : public oatpp::orm::DbClient {
 public:
@@ -22,12 +23,25 @@ public:
           "VALUES(:permission.permission_provider_id, :permission.name, :permission.description) "
           "RETURNING *;",
           PREPARE(true),
-          PARAM(oatpp::Object<Permission>, permission))
+          PARAM(oatpp::Object<PermissionDto>, permission))
 
     QUERY(deletePermission,
           "DELETE FROM permissions WHERE id = :id;",
           PREPARE(true),
           PARAM(oatpp::String, id)
+    )
+
+    QUERY(getPermission,
+          "SELECT * FROM permissions WHERE id = :id;",
+          PREPARE(true),
+          PARAM(oatpp::String, id)
+    )
+
+    QUERY(listPermissions,
+          "SELECT * FROM permissions OFFSET :offset LIMIT :limit;",
+          PREPARE(true),
+          PARAM(oatpp::UInt32, offset),
+          PARAM(oatpp::UInt32, limit)
     )
 
     QUERY(updatePermission,
@@ -36,10 +50,11 @@ public:
           " name = :permission.name, "
           " description = :permission.description "
           "WHERE"
-          " id = :permission.permission_provider_id "
+          " id = :id "
           "RETURNING *;",
           PREPARE(true),
-          PARAM(oatpp::Object<Permission>, permission)
+          PARAM(oatpp::String, id),
+          PARAM(oatpp::Object<PermissionDto>, permission)
     )
 
 };

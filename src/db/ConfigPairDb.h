@@ -30,6 +30,18 @@ public:
           PARAM(oatpp::Object<ConfigPairRequest>, config)
     )
 
+    QUERY(getConfigPairsForPermissionProvider,
+          "SELECT key, value FROM config_pairs INNER JOIN permission_providers_config_pairs ON permission_providers_config_pairs.config_pair_id = config_pairs.id WHERE permission_providers_config_pairs.permission_provider_id = :permission_provider_id",
+          PREPARE(true),
+          PARAM(oatpp::String, permission_provider_id)
+    )
+
+    QUERY(getConfigPairsForPermission,
+          "SELECT key, value FROM config_pairs INNER JOIN permissions_config_pairs ON permissions_config_pairs.config_pair_id = config_pairs.id WHERE permissions_config_pairs.permission_id = :permission_id",
+          PREPARE(true),
+          PARAM(oatpp::String, permission_id)
+    )
+
     QUERY(insertConfigPairsForPermission,
           "with config as ("
           "    INSERT INTO config_pairs (key, value) VALUES(:config.key, :config.value) RETURNING *"
@@ -41,6 +53,18 @@ public:
           PREPARE(true),
           PARAM(oatpp::String, permission_id),
           PARAM(oatpp::Object<ConfigPairRequest>, config)
+    )
+
+    QUERY(deleteConfigPairsForPermissionProvider,
+          "DELETE FROM config_pairs JOIN permission_providers_config_pairs ON permission_providers_config_pairs.permission_provider_id = config_pairs.config_pair_id WHERE config_pairs.permission_provider_id = :permission_provider_id",
+          PREPARE(true),
+          PARAM(oatpp::String, permission_provider_id)
+    )
+
+    QUERY(deleteConfigPairsForPermission,
+          "DELETE FROM config_pairs JOIN permissions_config_pairs ON permissions_config_pairs.permission_id = config_pairs.config_pair_id WHERE config_pairs.permission_id = :permission_id",
+          PREPARE(true),
+          PARAM(oatpp::String, permission_id)
     )
 };
 
