@@ -34,7 +34,7 @@ public:
     listPermissionProviders();
 
     oatpp::Object<PermissionProviderResponse>
-    getPermissionProvider(const oatpp::String &id);
+    getPermissionProvider(const oatpp::String &id, bool with_config);
 
     const oatpp::Void &deletePermissionProvider(const oatpp::String &wrapper);
 

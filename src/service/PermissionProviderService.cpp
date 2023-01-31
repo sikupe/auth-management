@@ -97,7 +97,7 @@ oatpp::Object<PermissionProviderResponse> PermissionProviderService::updatePermi
     return ppr;
 }
 
-oatpp::Object<PermissionProviderResponse> PermissionProviderService::getPermissionProvider(const oatpp::String &id) {
+oatpp::Object<PermissionProviderResponse> PermissionProviderService::getPermissionProvider(const oatpp::String &id, bool with_config) {
     auto pp_result = this->m_permissionProviderDb->getPermissionProvider(id);
     OATPP_ASSERT_HTTP(pp_result->isSuccess(), Status::CODE_404, pp_result->getErrorMessage())
     const auto pps = pp_result->fetch<oatpp::Vector<oatpp::Object<PermissionProvider>>>();
@@ -108,13 +108,16 @@ oatpp::Object<PermissionProviderResponse> PermissionProviderService::getPermissi
             pp->id);
     OATPP_ASSERT_HTTP(config_res->isSuccess(), Status::CODE_500, config_res->getErrorMessage())
 
-    const auto configPairs = config_res->fetch<oatpp::Vector<oatpp::Object<ConfigPairRequest>>>();
 
     const auto ppr = PermissionProviderResponse::createShared();
 
     ppr->id = pp->id;
     ppr->type = pp->type;
-    ppr->config = configPairs;
+
+    if (with_config) {
+        const auto configPairs = config_res->fetch<oatpp::Vector<oatpp::Object<ConfigPairRequest>>>();
+        ppr->config = configPairs;
+    }
 
     return ppr;
 }

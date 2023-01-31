@@ -21,7 +21,7 @@ PermissionService::createPermission(const oatpp::data::mapping::type::DTOWrapper
         m_configPairDb->insertConfigPairsForPermission(p->id, c);
     }
 
-    const auto permissionProvider = m_permissionProviderService->getPermissionProvider(p->permission_provider_id);
+    const auto permissionProvider = m_permissionProviderService->getPermissionProvider(p->permission_provider_id, false);
 
     const auto pr = PermissionResponse::createShared();
 
@@ -48,7 +48,7 @@ PermissionService::updatePermission(const oatpp::String &id, const oatpp::Object
         m_configPairDb->insertConfigPairsForPermission(p->id, c);
     }
 
-    const auto permissionProvider = m_permissionProviderService->getPermissionProvider(p->permission_provider_id);
+    const auto permissionProvider = m_permissionProviderService->getPermissionProvider(p->permission_provider_id, false);
 
     const auto pr = PermissionResponse::createShared();
 
@@ -78,7 +78,7 @@ oatpp::Object<PermissionResponse> PermissionService::getPermission(const oatpp::
 
     const auto configPairs = config_res->fetch<oatpp::Vector<oatpp::Object<ConfigPairRequest>>>();
 
-    const auto permissionProvider = m_permissionProviderService->getPermissionProvider(p->permission_provider_id);
+    const auto permissionProvider = m_permissionProviderService->getPermissionProvider(p->permission_provider_id, false);
 
     pr->id = p->id;
     pr->name = p->name;
@@ -129,7 +129,7 @@ oatpp::Object<PageDto<oatpp::Object<PermissionResponse>>> PermissionService::lis
             const auto permission_provider_id = savedPermissions[j - pageDto->size]->permission_provider_id;
             if (permission_provider_id) {
                 const auto permissionProvider = m_permissionProviderService->getPermissionProvider(
-                        permission_provider_id);
+                        permission_provider_id, false);
                 permission->permission_provider = permissionProvider;
             }
         }

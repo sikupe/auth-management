@@ -9,15 +9,11 @@
 #include "db/UserDb.h"
 #include "oatpp/core/macro/codegen.hpp"
 #include "oatpp/core/macro/component.hpp"
-#include "dto/PermissionProvider.h"
-#include "service/PermissionProviderService.h"
-
+#include "service/PermissionService.h"
+#include "dto/PermissionDto.h"
 #include <memory>
 
 #include OATPP_CODEGEN_BEGIN(ApiController)
-#include "service/PermissionService.h"
-#include "dto/PermissionRequest.h"
-#include "dto/PermissionDto.h"
 
 class PermissionController : public oatpp::web::server::api::ApiController {
     OATPP_COMPONENT(std::shared_ptr<PermissionService>, m_permissionService);
@@ -33,12 +29,12 @@ public:
     }
 
     ENDPOINT("PATCH", "/permissions/{id}", update,
-             BODY_DTO(oatpp::Object<PermissionDto>, permission_provider
+             BODY_DTO(oatpp::Object<PermissionDto>, permission
              ),
              PATH(String, id
              )) {
         return createDtoResponse(Status::CODE_200,
-                                 m_permissionService->updatePermission(id, permission_provider));
+                                 m_permissionService->updatePermission(id, permission));
     }
 
     ENDPOINT("UPDATE", "/permissions/{id}", del,

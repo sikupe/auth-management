@@ -13,6 +13,7 @@
 #include "oatpp/core/base/CommandLineArguments.hpp"
 #include "service/PermissionProviderService.h"
 #include "service/PermissionService.h"
+#include "service/PermissionRequestService.h"
 
 #include <cstdlib>
 
@@ -24,6 +25,10 @@ public:
 
     OATPP_CREATE_COMPONENT(shared_ptr<PermissionService>, permissionService)([] {
         return make_shared<PermissionService>();
+    }());
+
+    OATPP_CREATE_COMPONENT(shared_ptr<PermissionRequestService>, permissionRequestService)([] {
+        return make_shared<PermissionRequestService>();
     }());
 };
 

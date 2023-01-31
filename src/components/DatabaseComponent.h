@@ -11,6 +11,7 @@
 #include "db/ConfigPairDb.h"
 #include "db/PermissionDb.h"
 #include "dto/ConfigDto.h"
+#include "db/PermissionRequestDb.h"
 
 class DatabaseComponent {
 public:
@@ -101,6 +102,25 @@ public:
 
         /* Create MyClient database client */
         return std::make_shared<PermissionDb>(executor);
+    }());
+
+    OATPP_CREATE_COMPONENT(std::shared_ptr<PermissionRequestDb>, permissionRequestDb)([] {
+
+        OATPP_COMPONENT(ConfigDto, config); // Get config component
+
+        OATPP_COMPONENT(std::shared_ptr<oatpp::postgresql::ConnectionProvider>, connectionProvider);
+
+        /* Create database-specific ConnectionPool */
+        auto connectionPool = oatpp::postgresql::ConnectionPool::createShared(connectionProvider,
+                                                                              10 /* max-connections */,
+                                                                              std::chrono::seconds(
+                                                                                      5) /* connection TTL */);
+
+        /* Create database-specific Executor */
+        auto executor = std::make_shared<oatpp::postgresql::Executor>(connectionPool);
+
+        /* Create MyClient database client */
+        return std::make_shared<PermissionRequestDb>(executor);
     }());
 };
 

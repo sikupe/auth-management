@@ -14,6 +14,7 @@
 #include "controller/PermissionController.h"
 #include "controller/PermissionProviderController.h"
 #include "components/ConfigComponent.h"
+#include "controller/PermissionRequestController.h"
 
 #include <memory>
 
@@ -34,12 +35,14 @@ int main() {
     auto userController = make_shared<UserController>();
     auto permissionProviderController = make_shared<PermissionProviderController>();
     auto permissionController = make_shared<PermissionController>();
+    auto permissionRequestController = make_shared<PermissionRequestController>();
 
     auto router = oatpp::web::server::HttpRouter::createShared();
     router->addController(pingController);
     router->addController(userController);
     router->addController(permissionProviderController);
     router->addController(permissionController);
+    router->addController(permissionRequestController);
 
     auto connectionHandler = oatpp::web::server::HttpConnectionHandler::createShared(router);
     auto connectionProvider = oatpp::network::tcp::server::ConnectionProvider::createShared(
