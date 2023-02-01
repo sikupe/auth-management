@@ -27,7 +27,7 @@ PermissionRequestService::createPermissionRequest(const oatpp::Object<Permission
     prr->request_date = pr->request_date;
     prr->invalidation_date = pr->invalidation_date;
     prr->requestor = pr->requestor;
-    prr->permission = m_permissionService->getPermission(pr->permission_id);
+    prr->permission = m_permissionService->getPermission(pr->permission_id, false);
     prr->status = pr->status;
 
     return prr;
@@ -47,7 +47,7 @@ oatpp::Object<PermissionRequestResponse> PermissionRequestService::updatePermiss
     prr->request_date = pr->request_date;
     prr->invalidation_date = pr->invalidation_date;
     prr->requestor = pr->requestor;
-    prr->permission = m_permissionService->getPermission(pr->permission_id);
+    prr->permission = m_permissionService->getPermission(pr->permission_id, false);
     prr->status = pr->status;
 
     return prr;
@@ -71,13 +71,14 @@ oatpp::Object<PermissionRequestResponse> PermissionRequestService::getPermission
     prr->request_date = pr->request_date;
     prr->invalidation_date = pr->invalidation_date;
     prr->requestor = pr->requestor;
-    prr->permission = m_permissionService->getPermission(pr->permission_id);
+    prr->permission = m_permissionService->getPermission(pr->permission_id, false);
     prr->status = pr->status;
 
     return prr;
 }
 
-oatpp::Object<PageDto<oatpp::Object<PermissionRequestResponse>>> PermissionRequestService::listPermissionRequests() {
+oatpp::Object<PageDto<oatpp::Object<PermissionRequestResponse>>>
+PermissionRequestService::listPermissionRequests(bool permissionProviderConfig) {
     int start = 0;
     int step_size = 100;
     bool has_more = true;
@@ -102,8 +103,10 @@ oatpp::Object<PageDto<oatpp::Object<PermissionRequestResponse>>> PermissionReque
             prr->request_date = pr->request_date;
             prr->invalidation_date = pr->invalidation_date;
             prr->requestor = pr->requestor;
-            prr->permission = m_permissionService->getPermission(pr->permission_id);
+            prr->permission = m_permissionService->getPermission(pr->permission_id, permissionProviderConfig);
             prr->status = pr->status;
+
+            pageDto->items->push_back(prr);
         }
 
         pageDto->size = pageDto->size + savedPermissionRequests->size(); // += not overloaded for some reason

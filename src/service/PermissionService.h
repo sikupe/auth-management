@@ -34,7 +34,7 @@ public:
 
     void deletePermission(const oatpp::String &string);
 
-    oatpp::Object<PermissionResponse> getPermission(const oatpp::String &string);
+    oatpp::Object<PermissionResponse> getPermission(const oatpp::String &string, bool permissionProviderConfig);
 
     oatpp::Object<PageDto<oatpp::Object<PermissionResponse>>> listPermissions();
 };

@@ -47,7 +47,7 @@ public:
     ENDPOINT("GET", "/permissions/{id}", get,
              PATH(String, id
              )) {
-        return createDtoResponse(Status::CODE_200, m_permissionService->getPermission(id));
+        return createDtoResponse(Status::CODE_200, m_permissionService->getPermission(id, false));
     }
 
     ENDPOINT("GET", "/permissions", list) {

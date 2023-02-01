@@ -9,6 +9,7 @@
 #include "db/UserDb.h"
 #include "oatpp/core/macro/codegen.hpp"
 #include "oatpp/core/macro/component.hpp"
+#include "dto/UserDto.h"
 
 #include <memory>
 
@@ -22,8 +23,12 @@ public:
     explicit UserController(OATPP_COMPONENT(std::shared_ptr<ObjectMapper>, objectMapper))
             : oatpp::web::server::api::ApiController(objectMapper) {}
 
-    ENDPOINT("GET", "/users", root) {
+    ENDPOINT("GET", "/users", getUser) {
         return createDtoResponse(Status::CODE_200, m_userService.getUsers());
+    }
+
+    ENDPOINT("POST", "/users", createUser, BODY_DTO(oatpp::Object<UserDto>, user)) {
+        return createDtoResponse(Status::CODE_200, m_userService.createUser(user));
     }
 };
 

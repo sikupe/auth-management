@@ -26,7 +26,8 @@ public:
 
     oatpp::Object<PermissionRequestResponse> getPermissionRequest(const oatpp::String &id);
 
-    oatpp::Object<PageDto<oatpp::Object<PermissionRequestResponse>>> listPermissionRequests();
+    oatpp::Object<PageDto<oatpp::Object<PermissionRequestResponse>>>
+    listPermissionRequests(bool permissionProviderConfig);
 
     void deletePermissionRequest(const oatpp::String &id);
 };

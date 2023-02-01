@@ -9,11 +9,13 @@
 
 #include "oatpp/parser/json/mapping/ObjectMapper.hpp"
 #include "oatpp/core/macro/component.hpp"
+#include "oatpp/network/tcp/client/ConnectionProvider.hpp"
 
 #include "oatpp/core/base/CommandLineArguments.hpp"
 #include "service/PermissionProviderService.h"
 #include "service/PermissionService.h"
 #include "service/PermissionRequestService.h"
+#include "service/connectors/KeyCloakConnector.h"
 
 #include <cstdlib>
 
@@ -29,6 +31,10 @@ public:
 
     OATPP_CREATE_COMPONENT(shared_ptr<PermissionRequestService>, permissionRequestService)([] {
         return make_shared<PermissionRequestService>();
+    }());
+
+    OATPP_CREATE_COMPONENT(shared_ptr<KeyCloakConnector>, keyCloakConnector)([] {
+        return make_shared<KeyCloakConnector>();
     }());
 };
 

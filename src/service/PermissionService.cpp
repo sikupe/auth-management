@@ -65,7 +65,8 @@ void PermissionService::deletePermission(const oatpp::String &id) {
     this->m_permissionDb->deletePermission(id);
 }
 
-oatpp::Object<PermissionResponse> PermissionService::getPermission(const oatpp::String &id) {
+oatpp::Object<PermissionResponse>
+PermissionService::getPermission(const oatpp::String &id, bool permissionProviderConfig) {
     auto result = this->m_permissionDb->getPermission(id);
     OATPP_ASSERT_HTTP(result->isSuccess(), Status::CODE_404, result->getErrorMessage())
     const auto ps = result->fetch<oatpp::Vector<oatpp::Object<Permission>>>();
@@ -78,7 +79,7 @@ oatpp::Object<PermissionResponse> PermissionService::getPermission(const oatpp::
 
     const auto configPairs = config_res->fetch<oatpp::Vector<oatpp::Object<ConfigPairRequest>>>();
 
-    const auto permissionProvider = m_permissionProviderService->getPermissionProvider(p->permission_provider_id, false);
+    const auto permissionProvider = m_permissionProviderService->getPermissionProvider(p->permission_provider_id, permissionProviderConfig);
 
     pr->id = p->id;
     pr->name = p->name;

@@ -6,3 +6,9 @@ Dockerfile
 docker-compose.yml
 .dockerignore
 .gitignore
+*.yml
+*.py
+venv
+*Dockerfile
+requirements.txt
+*.env

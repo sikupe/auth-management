@@ -15,8 +15,10 @@
 #include "controller/PermissionProviderController.h"
 #include "components/ConfigComponent.h"
 #include "controller/PermissionRequestController.h"
+#include "service/SynchronizationService.h"
 
 #include <memory>
+#include <oatpp/core/async/Executor.hpp>
 
 using namespace std;
 
@@ -49,9 +51,17 @@ int main() {
             {"127.0.0.1", 8000, oatpp::network::Address::IP_4});
     oatpp::network::Server server(connectionProvider, connectionHandler);
 
+    oatpp::async::Executor executor;
+
+    executor.execute<SynchronizationService>();
+
     OATPP_LOGI("MyApp", "Server running on port %s", connectionProvider->getProperty("port").getData());
 
     server.run();
+
+    executor.waitTasksFinished();
+    executor.stop();
+    executor.join();
 
     oatpp::base::Environment::destroy();
 

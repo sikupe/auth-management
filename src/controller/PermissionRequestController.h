@@ -39,7 +39,7 @@ public:
                                  m_permissionService->updatePermissionRequest(id, permissionRequest));
     }
 
-    ENDPOINT("PATCH", "/permission-requests/{id}", del,
+    ENDPOINT("DELETE", "/permission-requests/{id}", del,
              PATH(String, id
              )) {
         m_permissionService->deletePermissionRequest(id);
@@ -53,7 +53,7 @@ public:
     }
 
     ENDPOINT("GET", "/permission-requests", list) {
-        return createDtoResponse(Status::CODE_200, m_permissionService->listPermissionRequests());
+        return createDtoResponse(Status::CODE_200, m_permissionService->listPermissionRequests(false));
     }
 };
 
