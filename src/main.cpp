@@ -18,6 +18,7 @@
 #include "service/SynchronizationService.h"
 
 #include <memory>
+#include <cstdlib>
 #include <oatpp/core/async/Executor.hpp>
 
 using namespace std;
@@ -46,9 +47,25 @@ int main() {
     router->addController(permissionController);
     router->addController(permissionRequestController);
 
+    string bindAddress = "127.0.0.1";
+    string portString = "8000";
+
+    const string envBindAddress = ::getenv("BIND_ADDRESS");
+    const string envPort = ::getenv("BIND_PORT");
+
+    if (!envBindAddress.empty()) {
+        bindAddress = envBindAddress;
+    }
+
+    if (!envPort.empty()) {
+        portString = envPort;
+    }
+
+    unsigned short port = stoi(portString);
+
     auto connectionHandler = oatpp::web::server::HttpConnectionHandler::createShared(router);
     auto connectionProvider = oatpp::network::tcp::server::ConnectionProvider::createShared(
-            {"127.0.0.1", 8000, oatpp::network::Address::IP_4});
+            {bindAddress, port, oatpp::network::Address::IP_4});
     oatpp::network::Server server(connectionProvider, connectionHandler);
 
     oatpp::async::Executor executor;

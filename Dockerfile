@@ -32,7 +32,10 @@ RUN mkdir build
 RUN cd build && cmake .. && make
 
 FROM alpine:latest AS prod
+ENV BIND_ADDRESS=0.0.0.0
 RUN apk add --no-cache libstdc++ libgcc postgresql-dev
+RUN apk add --no-cache curl
+
 RUN addgroup -S unpriviliged && adduser -S unpriviliged -G unpriviliged
 USER unpriviliged
 
