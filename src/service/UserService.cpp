@@ -7,13 +7,13 @@
 oatpp::Object<UserDto> UserService::createUser(const oatpp::Object<UserDto> &dto) {
     auto dbResult = m_database->createUser(dto);
     OATPP_ASSERT_HTTP(dbResult->isSuccess(), Status::CODE_500, dbResult->getErrorMessage());
-//    return getUserById(dto->id);
+    return getUserById(dto->id);
 }
 
 oatpp::Object<UserDto> UserService::updateUser(const oatpp::Object<UserDto> &dto) {
     auto dbResult = m_database->updateUser(dto);
     OATPP_ASSERT_HTTP(dbResult->isSuccess(), Status::CODE_500, dbResult->getErrorMessage());
-//    return getUserById(dto->id);
+    return getUserById(dto->id);
 }
 
 oatpp::Object<UserDto> UserService::getUserById(const oatpp::String &id,

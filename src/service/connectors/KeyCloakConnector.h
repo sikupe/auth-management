@@ -12,15 +12,18 @@
 #include <string>
 #include <memory>
 #include <optional>
+#include <utility>
 
 using namespace std;
 
 class KeyCloakConnector : public Connector {
+    string base;
+    unsigned short port;
     Object<TokenDto> login(const string &username, const string &password, const string &realm,
                            const shared_ptr<KeyCloakClient> &keyCloakClient);
 
 public:
-    KeyCloakConnector() : Connector() {}
+    explicit KeyCloakConnector(string base, unsigned short port) : Connector(), base(std::move(base)), port(port) {}
 
     void synchronize(const Vector<Object<PermissionRequestResponse>> &permissionRequests) override;
 };

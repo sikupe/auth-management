@@ -9,5 +9,5 @@ oatpp::async::Action SynchronizationService::act() {
     const auto permissionRequestsPageDto = permissionRequestService->listPermissionRequests(true);
     const auto permissionRequests = permissionRequestsPageDto->items;
     keyCloakConnector->synchronize(permissionRequests);
-    return waitRepeat(std::chrono::seconds(30));
+    return waitRepeat(std::chrono::seconds(5));
 }

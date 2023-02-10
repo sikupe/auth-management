@@ -1,3 +1,4 @@
+import time
 from time import sleep
 
 import requests
@@ -9,6 +10,7 @@ import os
 def start_docker():
     os.system("docker compose -f docker-compose.yml down")
     os.system("docker compose -f docker-compose-keycloak.yml down")
+    os.system("docker compose -f docker-compose-local-db.yml down")
 
     os.system("docker compose -f docker-compose-keycloak.yml up -d")
     os.system("docker compose -f docker-compose.yml up -d --build")
@@ -124,14 +126,16 @@ def create_permission_request(host: str, user_id: str, invalidation_date: int, p
 
 
 def approve_permission_request(host: str, permission_request_id: str):
-    response = requests.get(f'http://{host}/permission-requests')
+    response = requests.get(f'http://{host}/permission-requests/{permission_request_id}')
 
     response.raise_for_status()
 
     data = response.json()
     data['status'] = 'Granted'
+    data['permission_id'] = data['permission']['id']
+    del data['permission']
 
-    response = requests.post(f'http://{host}/permission-requests', json=data)
+    response = requests.patch(f'http://{host}/permission-requests/{data["id"]}', json=data)
 
     response.raise_for_status()
 
@@ -141,6 +145,17 @@ def get_user_id(token: str) -> str:
     decoded = base64.b64decode(payload).decode('utf8')
     payloadDecoded = json.loads(decoded)
     return payloadDecoded['sub']
+
+
+def check_for_sync(host: str, user_id: str, group_id: str):
+    response = requests.get(f'http://{host}/admin/realms/master/users/{user_id}/groups')
+
+    result = response.json()
+    for group in result:
+        if group['id'] == group_id:
+            return
+
+    raise Exception('User not provisioned into group')
 
 
 def main():
@@ -169,6 +184,13 @@ def main():
     permission_id = create_permission(auth_mgr_host, permission_name, '', permission_provider_id, group_id)
     permission_request_id = create_permission_request(auth_mgr_host, user_id, invalidation_date, permission_id)
     approve_permission_request(auth_mgr_host, permission_request_id)
+
+    print('Successfully setup auth management')
+
+    print('Waiting for sync')
+    time.sleep(6)
+
+    print('Check if sync worked')
 
 
 if __name__ == '__main__':

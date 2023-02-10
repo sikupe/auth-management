@@ -23,7 +23,7 @@ void KeyCloakConnector::synchronize(const Vector<Object<PermissionRequestRespons
 
             /* create connection provider */
             auto connectionProvider = oatpp::network::tcp::client::ConnectionProvider::createShared(
-                    {"", 80, oatpp::network::Address::IP_4});
+                    {base, port, oatpp::network::Address::IP_4});
 
             /* create HTTP request executor */
             auto requestExecutor = oatpp::web::client::HttpRequestExecutor::createShared(connectionProvider);
@@ -31,7 +31,7 @@ void KeyCloakConnector::synchronize(const Vector<Object<PermissionRequestRespons
             /* create JSON object mapper */
             auto keyCloakClient = KeyCloakClient::createShared(requestExecutor, mapper);
 
-            const auto realm = this->getValue(permissionRequest->permission->config, "realm");
+            const auto realm = this->getValue(permissionRequest->permission->permission_provider->config, "realm");
             const auto username = this->getValue(permissionRequest->permission->permission_provider->config,
                                                  "username");
             const auto password = this->getValue(permissionRequest->permission->permission_provider->config,
@@ -39,12 +39,13 @@ void KeyCloakConnector::synchronize(const Vector<Object<PermissionRequestRespons
             const string userId = permissionRequest->requestor;
             const auto groupId = this->getValue(permissionRequest->permission->config, "groupId");
             const auto token = this->login(username, password, realm, keyCloakClient);
+            const auto bearerToken = "Bearer " + token->access_token;
 
             if (permissionRequest->status == PermissionRequestStatus::Granted &&
                 permissionRequest->invalidation_date < now) {
-                keyCloakClient->addGroup(realm, userId, groupId, token->access_token);
+                keyCloakClient->addGroup(realm, userId, groupId, bearerToken);
             } else {
-                keyCloakClient->deleteGroup(realm, userId, groupId, token->access_token);
+                keyCloakClient->deleteGroup(realm, userId, groupId, bearerToken);
             }
         }
     }
@@ -55,11 +56,13 @@ Object<TokenDto> KeyCloakConnector::login(const string &username, const string &
     auto mapper = make_shared<parser::json::mapping::ObjectMapper>();
 
     ostringstream ss;
-    ss << "grant_type=password" << endl;
-    ss << "client_id=admin-cli" << endl;
-    ss << "username=" << username << endl;
-    ss << "password=" << password << endl;
+    ss << "grant_type=password" << "&";
+    ss << "client_id=admin-cli" << "&";
+    ss << "username=" << username << "&";
+    ss << "password=" << password;
 
-    return keyCloakClient->login(realm, ss.str())->readBodyToDto<Object<TokenDto>>(mapper);
+    const auto response = keyCloakClient->login(realm, ss.str(), "application/x-www-form-urlencoded");
+    const auto result = response->readBodyToDto<Object<TokenDto>>(mapper);
+    return result;
 }
 

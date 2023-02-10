@@ -15,23 +15,24 @@ API_CLIENT_INIT(KeyCloakClient);
 
     API_CALL("DELETE", "/admin/realms/{realm}/users/{userId}/groups/", listGroups, PATH(String, realm),
              PATH(String, userId),
-             HEADER(String, token, "Authorization Bearer")
+             HEADER(String, token, "Authorization")
     );
 
     API_CALL("PUT", "/admin/realms/{realm}/users/{userId}/groups/{groupId}", addGroup, PATH(String, realm),
              PATH(String, userId),
              PATH(String, groupId),
-             HEADER(String, token, "Authorization Bearer")
+             HEADER(String, token, "Authorization")
     );
 
     API_CALL("DELETE", "/admin/realms/{realm}/users/{userId}/groups/{groupId}", deleteGroup, PATH(String, realm),
              PATH(String, userId),
              PATH(String, groupId),
-             HEADER(String, token, "Authorization Bearer")
+             HEADER(String, token, "Authorization")
     );
 
-    API_CALL("POST", "/auth/realms/{realm}/protocol/openid-connect/token", login, PATH(String, realm),
-             BODY_STRING(String, loginData)
+    API_CALL("POST", "/realms/{realm}/protocol/openid-connect/token", login, PATH(String, realm),
+             BODY_STRING(String, loginData),
+             HEADER(String, contentType, "Content-Type")
     );
 };
 

@@ -18,6 +18,9 @@
 #include "service/connectors/KeyCloakConnector.h"
 
 #include <cstdlib>
+#include <string>
+
+using namespace std;
 
 class AppComponent {
 public:
@@ -34,7 +37,20 @@ public:
     }());
 
     OATPP_CREATE_COMPONENT(shared_ptr<KeyCloakConnector>, keyCloakConnector)([] {
-        return make_shared<KeyCloakConnector>();
+        string base = "127.0.0.1";
+        unsigned short port = 8080;
+        const auto baseEnv = ::getenv("KEYCLOAK_HOST");
+        const auto portEnv = ::getenv("KEYCLOAK_PORT");
+
+        if(baseEnv != nullptr) {
+            base = baseEnv;
+        }
+
+        if (portEnv != nullptr) {
+            port = stoi(portEnv);
+        }
+
+        return make_shared<KeyCloakConnector>(base, port);
     }());
 };
 

@@ -20,6 +20,7 @@
 #include <memory>
 #include <cstdlib>
 #include <oatpp/core/async/Executor.hpp>
+#include <iostream>
 
 using namespace std;
 
@@ -50,14 +51,14 @@ int main() {
     string bindAddress = "127.0.0.1";
     string portString = "8000";
 
-    const string envBindAddress = ::getenv("BIND_ADDRESS");
-    const string envPort = ::getenv("BIND_PORT");
+    const auto envBindAddress = ::getenv("BIND_ADDRESS");
+    const auto envPort = ::getenv("BIND_PORT");
 
-    if (!envBindAddress.empty()) {
+    if (envBindAddress != nullptr) {
         bindAddress = envBindAddress;
     }
 
-    if (!envPort.empty()) {
+    if (envPort != nullptr) {
         portString = envPort;
     }
 
@@ -72,7 +73,7 @@ int main() {
 
     executor.execute<SynchronizationService>();
 
-    OATPP_LOGI("MyApp", "Server running on port %s", connectionProvider->getProperty("port").getData());
+    cout << "Server listening on " << bindAddress << ":" << port << endl;
 
     server.run();
 

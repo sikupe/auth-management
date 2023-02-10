@@ -27,7 +27,7 @@ public:
     QUERY(createUser,
           "INSERT INTO users"
           "(id, username, email, is_admin) VALUES "
-          "(uuid_generate_v4(), :user.username, :user.email, :user.is_admin)"
+          "(:user.id, :user.username, :user.email, :user.is_admin)"
           "RETURNING *;",
           PREPARE(true), // user prepared statement!
           PARAM(oatpp::Object<UserDto>, user)
