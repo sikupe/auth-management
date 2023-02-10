@@ -7,16 +7,22 @@ services:
       dockerfile: Dockerfile
     ports:
       - "127.0.0.1:8000:8000"
+    networks:
+      - keycloak-external
+      - auth-management
     depends_on:
       database:
         condition: service_healthy
     environment:
       - "DATABASE_CONNECTION=postgresql://test_user:test_pw@postgres:5432/test_db"
+      - "KEYCLOAK_HOST=keycloak"
 
   database:
     container_name: postgres
     image: postgres:latest
     restart: always
+    networks:
+      - auth-management
     environment:
       POSTGRES_PASSWORD: test_pw
       POSTGRES_USER: test_user
@@ -26,3 +32,8 @@ services:
       interval: 1s
       timeout: 5s
       retries: 5
+
+networks:
+  auth-management:
+  keycloak-external:
+    external: true

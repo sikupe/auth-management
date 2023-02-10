@@ -140,6 +140,21 @@ def approve_permission_request(host: str, permission_request_id: str):
     response.raise_for_status()
 
 
+def deny_permission_request(host: str, permission_request_id: str):
+    response = requests.get(f'http://{host}/permission-requests/{permission_request_id}')
+
+    response.raise_for_status()
+
+    data = response.json()
+    data['status'] = 'Declined'
+    data['permission_id'] = data['permission']['id']
+    del data['permission']
+
+    response = requests.patch(f'http://{host}/permission-requests/{data["id"]}', json=data)
+
+    response.raise_for_status()
+
+
 def get_user_id(token: str) -> str:
     payload = token[token.find('.') + 1:token.rfind('.')] + '=='
     decoded = base64.b64decode(payload).decode('utf8')
@@ -147,15 +162,30 @@ def get_user_id(token: str) -> str:
     return payloadDecoded['sub']
 
 
-def check_for_sync(host: str, user_id: str, group_id: str):
-    response = requests.get(f'http://{host}/admin/realms/master/users/{user_id}/groups')
+def check_for_sync_present(host: str, token: str, user_id: str, group_id: str) -> bool:
+    response = requests.get(f'http://{host}/admin/realms/master/users/{user_id}/groups', headers={
+        'Authorization': f'Bearer {token}'
+    })
 
     result = response.json()
     for group in result:
         if group['id'] == group_id:
-            return
+            return True
 
-    raise Exception('User not provisioned into group')
+    return False
+
+
+def check_for_sync_not_present(host: str, token: str, user_id: str, group_id: str) -> bool:
+    response = requests.get(f'http://{host}/admin/realms/master/users/{user_id}/groups', headers={
+        'Authorization': f'Bearer {token}'
+    })
+
+    result = response.json()
+    for group in result:
+        if group['id'] == group_id:
+            return False
+
+    return True
 
 
 def main():
@@ -191,6 +221,23 @@ def main():
     time.sleep(6)
 
     print('Check if sync worked')
+    success = check_for_sync_present(keycloak_host, token, user_id, group_id)
+    if success:
+        print('Sync worked')
+    else:
+        print('Sync did not work')
+
+    deny_permission_request(auth_mgr_host, permission_request_id)
+
+    print('Waiting for sync')
+    time.sleep(6)
+
+    print('Check if sync worked')
+    success = check_for_sync_not_present(keycloak_host, token, user_id, group_id)
+    if success:
+        print('Sync worked')
+    else:
+        print('Sync did not work')
 
 
 if __name__ == '__main__':

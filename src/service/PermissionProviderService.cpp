@@ -69,8 +69,7 @@ oatpp::Object<PageDto<oatpp::Object<PermissionProviderResponse>>> PermissionProv
     return pageDto;
 }
 
-const oatpp::Void &
-PermissionProviderService::deletePermissionProvider(const oatpp::String &id) {
+void PermissionProviderService::deletePermissionProvider(const oatpp::String &id) {
     this->m_permissionProviderDb->deletePermissionProvider(id);
 }
 
@@ -97,7 +96,8 @@ oatpp::Object<PermissionProviderResponse> PermissionProviderService::updatePermi
     return ppr;
 }
 
-oatpp::Object<PermissionProviderResponse> PermissionProviderService::getPermissionProvider(const oatpp::String &id, bool with_config) {
+oatpp::Object<PermissionProviderResponse>
+PermissionProviderService::getPermissionProvider(const oatpp::String &id, bool with_config) {
     auto pp_result = this->m_permissionProviderDb->getPermissionProvider(id);
     OATPP_ASSERT_HTTP(pp_result->isSuccess(), Status::CODE_404, pp_result->getErrorMessage())
     const auto pps = pp_result->fetch<oatpp::Vector<oatpp::Object<PermissionProvider>>>();

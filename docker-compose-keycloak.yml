@@ -2,6 +2,7 @@ version: '3.9'
 
 services:
   keycloak:
+    container_name: keycloak
     build:
       context: .
       dockerfile: keycloak.Dockerfile
@@ -15,6 +16,7 @@ services:
       - postgres
     networks:
       - keycloak
+      - keycloak-external
     ports:
       - "127.0.0.1:8080:8080"
 
@@ -31,3 +33,6 @@ services:
 
 networks:
   keycloak:
+  keycloak-external:
+    driver: bridge
+    name: keycloak-external
